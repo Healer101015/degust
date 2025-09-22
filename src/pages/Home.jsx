@@ -10,7 +10,7 @@ const SALGADOS = [
   { id: "tradicional", label: "Tradicional", desc: "Frango", price: 6.0, image: coxinhaImg },
   { id: "caipira", label: "Caipira", desc: "Frango com catupiry", price: 6.5, image: coxinhaImg },
   { id: "pizza", label: "Pizza", desc: "Queijo, presunto e orégano", price: 7.0, image: placeholderImg },
-  { id: "baiana", label: "Baiana", desc: "Calabresa apimentada", price: 6.0, image: placeholderImg },
+  { id: "baiana", label: "Baiana", desc: "Calabresa, Calabresa apimentada", price: 6.0, image: placeholderImg },
   { id: "brutos", label: "Brutos", desc: "Carne de hambúrguer, presunto e queijo", price: 7.0, image: placeholderImg },
   { id: "nordestina", label: "Nordestina", desc: "Carne de sol com catupiry", price: 8.5, image: placeholderImg },
   { id: "bovino", label: "Bovino", desc: "Carne com ervilha", price: 7.0, image: placeholderImg },
