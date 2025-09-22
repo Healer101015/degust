@@ -7,15 +7,15 @@ import placeholderImg from "./assets/salgado_placeholder.jpg";
 const WHATSAPP_NUMBER = "7182330587";
 
 const SALGADOS = [
-  { id: "frango", label: "Frango", desc: "Coxinha de frango", price: 6.0, image: coxinhaImg },
-  { id: "frango_catupiry", label: "Frango com Catupiry", desc: "Frango + catupiry", price: 6.5, image: coxinhaImg },
-  { id: "carne_ervilha", label: "Carne com Ervilha", desc: "Carne + ervilha", price: 7.0, image: placeholderImg },
-  { id: "calabresa_apimentada", label: "Calabresa Apimentada", desc: "Calabresa picante", price: 6.5, image: placeholderImg },
-  { id: "carne_hamburguer_queijo", label: "Carne de Hambúrguer com Queijo", desc: "Hambúrguer + queijo", price: 6.5, image: placeholderImg },
-  { id: "queijo_presunto", label: "Queijo e Presunto", desc: "Presunto + queijo", price: 7.0, image: placeholderImg },
-  { id: "carne_sol_catupiry", label: "Carne de Sol com Catupiry", desc: "Carne de sol + catupiry", price: 8.5, image: placeholderImg },
-  { id: "hamburguer_especial", label: "Hambúrguer Especial", desc: "Hambúrguer, queijo, pitbull e camarão", price: 10.0, image: placeholderImg },
-];
+  { id: "tradicional", label: "Tradicional", desc: "Frango", price: 6.00, image: coxinhaImg },
+  { id: "baiana", label: "Baiana", desc: "Calabresa e Calabresa apimentada", price: 6.00, image: placeholderImg },
+  { id: "caipira", label: "Caipira", desc: "Frango catupiri", price: 6.50, image: coxinhaImg },
+  { id: "pizza", label: "Pizza", desc: "Queijo presunto orégano", price: 7.00, image: placeholderImg },
+  { id: "brutos", label: "Brutos", desc: "Carne de amburg presunto e queijo", price: 7.00, image: placeholderImg },
+  { id: "bovino", label: "Bovino", desc: "Carne e ervilha", price: 7.00, image: placeholderImg },
+  { id: "nordestina", label: "Nordestina", desc: "Carne do sol catupiri", price: 8.50, image: placeholderImg },
+  { id: "ouro_do_mar", label: "Ouro do mar", desc: "Camarao", price: 10.00, image: placeholderImg },
+].sort((a, b) => a.price - b.price);
 
 const brl = (v) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
@@ -24,6 +24,7 @@ export default function DegustApp() {
   const [cart, setCart] = useState([]);
   const [observacoes, setObservacoes] = useState("");
   const [isPrinting, setIsPrinting] = useState(false);
+  const [popup, setPopup] = useState({ show: false, message: '' });
   const menuRef = useRef(null);
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -41,6 +42,9 @@ export default function DegustApp() {
         return [...prevCart, { ...salgado, quantity: 1 }];
       }
     });
+
+    setPopup({ show: true, message: `${salgado.label} adicionado ao carrinho!` });
+    setTimeout(() => setPopup({ show: false, message: '' }), 3000);
   };
 
   const updateQuantity = (salgadoId, amount) => {
@@ -94,6 +98,12 @@ export default function DegustApp() {
 
   return (
     <div className="min-h-screen bg-stone-50 text-stone-800 font-inter">
+      {popup.show && (
+        <div className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg shadow-lg z-20">
+          {popup.message}
+          <button onClick={() => setPopup({ show: false, message: '' })} className="ml-4 font-bold">X</button>
+        </div>
+      )}
       <header className="sticky top-0 z-10 backdrop-blur-md bg-stone-50/80 border-b border-stone-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -115,7 +125,6 @@ export default function DegustApp() {
             </button>
           </div>
 
-          {/* Lista no estilo do cardápio da imagem */}
           <div ref={menuRef} className={`p-1 ${isPrinting ? "bg-white" : ""}`}>
             {isPrinting && (
               <div className="mb-8 text-center p-6">
@@ -162,7 +171,6 @@ export default function DegustApp() {
           </div>
         </section>
 
-        {/* Carrinho */}
         <aside className="lg:col-span-1">
           <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-5 sticky top-24">
             <h2 className="text-xl font-bold mb-5 font-sora">Seu Pedido</h2>
@@ -219,7 +227,7 @@ export default function DegustApp() {
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
-                  <path d="M10.25 18a.75.75 0 01-.75-.75V2.75a.75.75 0 011.5 0v14.5a.75.75 0 01-.75.75zM4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z" />
+                  <path d="M10.25 18a.75.75 0 01-.75-.75V2.75a.75.75 0 011.5 0v14.5a.75.75 0 01-.75-.75zM4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z" />
                 </svg>
                 Finalizar no WhatsApp
               </button>
