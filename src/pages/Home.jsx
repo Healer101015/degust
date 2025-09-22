@@ -2,20 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
 import logo from "./assets/logo.png";
 import coxinhaImg from "./assets/coxinha.jpg";
-import placeholderImg from "./assets/salgado_placeholder.jpg";
+import placeholderImg from "./assets/coxinha.jpg";
 
 const WHATSAPP_NUMBER = "7182330587";
 
 const SALGADOS = [
-  { id: "tradicional", label: "Tradicional", desc: "Frango", price: 6.00, image: coxinhaImg },
-  { id: "baiana", label: "Baiana", desc: "Calabresa e Calabresa apimentada", price: 6.00, image: placeholderImg },
-  { id: "caipira", label: "Caipira", desc: "Frango catupiri", price: 6.50, image: coxinhaImg },
-  { id: "pizza", label: "Pizza", desc: "Queijo presunto orégano", price: 7.00, image: placeholderImg },
-  { id: "brutos", label: "Brutos", desc: "Carne de amburg presunto e queijo", price: 7.00, image: placeholderImg },
-  { id: "bovino", label: "Bovino", desc: "Carne e ervilha", price: 7.00, image: placeholderImg },
-  { id: "nordestina", label: "Nordestina", desc: "Carne do sol catupiri", price: 8.50, image: placeholderImg },
-  { id: "ouro_do_mar", label: "Ouro do mar", desc: "Camarao", price: 10.00, image: placeholderImg },
-].sort((a, b) => a.price - b.price);
+  { id: "frango", label: "Frango", desc: "Coxinha de frango", price: 6.0, image: coxinhaImg },
+  { id: "frango_catupiry", label: "Frango com Catupiry", desc: "Frango + catupiry", price: 6.5, image: coxinhaImg },
+  { id: "carne_ervilha", label: "Carne com Ervilha", desc: "Carne + ervilha", price: 7.0, image: placeholderImg },
+  { id: "calabresa_apimentada", label: "Calabresa Apimentada", desc: "Calabresa picante", price: 6.5, image: placeholderImg },
+  { id: "carne_hamburguer_queijo", label: "Carne de Hambúrguer com Queijo", desc: "Hambúrguer + queijo", price: 6.5, image: placeholderImg },
+  { id: "queijo_presunto", label: "Queijo e Presunto", desc: "Presunto + queijo", price: 7.0, image: placeholderImg },
+  { id: "carne_sol_catupiry", label: "Carne de Sol com Catupiry", desc: "Carne de sol + catupiry", price: 8.5, image: placeholderImg },
+  { id: "hamburguer_especial", label: "Hambúrguer Especial", desc: "Hambúrguer, queijo, pitbull e camarão", price: 10.0, image: placeholderImg },
+];
 
 const brl = (v) =>
   new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
@@ -24,7 +24,6 @@ export default function DegustApp() {
   const [cart, setCart] = useState([]);
   const [observacoes, setObservacoes] = useState("");
   const [isPrinting, setIsPrinting] = useState(false);
-  const [popup, setPopup] = useState({ show: false, message: '' });
   const menuRef = useRef(null);
 
   const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -42,9 +41,6 @@ export default function DegustApp() {
         return [...prevCart, { ...salgado, quantity: 1 }];
       }
     });
-
-    setPopup({ show: true, message: `${salgado.label} adicionado ao carrinho!` });
-    setTimeout(() => setPopup({ show: false, message: '' }), 3000);
   };
 
   const updateQuantity = (salgadoId, amount) => {
@@ -82,7 +78,7 @@ export default function DegustApp() {
         html2canvas(menuRef.current, {
           useCORS: true,
           scale: 2,
-          backgroundColor: "#ffffff",
+          backgroundColor: "#171717",
         }).then((canvas) => {
           const link = document.createElement("a");
           link.href = canvas.toDataURL("image/png");
@@ -97,18 +93,12 @@ export default function DegustApp() {
   }, [isPrinting]);
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-800 font-inter">
-      {popup.show && (
-        <div className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg shadow-lg z-20">
-          {popup.message}
-          <button onClick={() => setPopup({ show: false, message: '' })} className="ml-4 font-bold">X</button>
-        </div>
-      )}
-      <header className="sticky top-0 z-10 backdrop-blur-md bg-stone-50/80 border-b border-stone-200">
+    <div className="min-h-screen bg-black text-yellow-50 font-inter">
+      <header className="sticky top-0 z-10 backdrop-blur-md bg-black/80 border-b border-yellow-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={logo} alt="Degust Logo" className="w-10 h-10 rounded-2xl" />
-            <h1 className="text-xl sm:text-2xl font-bold font-sora tracking-tight">Degust</h1>
+            <h1 className="text-xl sm:text-2xl font-bold font-sora tracking-tight text-yellow-400">Degust</h1>
           </div>
         </div>
       </header>
@@ -116,16 +106,16 @@ export default function DegustApp() {
       <main className="max-w-6xl mx-auto p-4 sm:px-6 grid lg:grid-cols-3 gap-6 lg:gap-8">
         <section className="lg:col-span-2">
           <div className="flex justify-between items-center mb-5 px-1">
-            <h2 className="text-3xl font-bold font-sora text-stone-900">Nosso Cardápio</h2>
+            <h2 className="text-3xl font-bold font-sora text-yellow-400">Nosso Cardápio</h2>
             <button
               onClick={handleDownloadMenu}
-              className="px-4 py-2 rounded-lg border text-sm font-semibold shadow-sm transition-all duration-200 bg-white hover:bg-stone-100 text-stone-700 border-stone-300 hover:shadow-md"
+              className="px-4 py-2 rounded-lg border text-sm font-semibold shadow-sm transition-all duration-200 bg-yellow-500 hover:bg-yellow-600 text-black border-yellow-700 hover:shadow-md"
             >
               Baixar Cardápio
             </button>
           </div>
 
-          <div ref={menuRef} className={`p-1 ${isPrinting ? "bg-white" : ""}`}>
+          <div ref={menuRef} className={`p-1 ${isPrinting ? "bg-black" : ""}`}>
             {isPrinting && (
               <div className="mb-8 text-center p-6">
                 <img
@@ -133,7 +123,7 @@ export default function DegustApp() {
                   alt="Degust Logo"
                   className="w-20 h-20 mx-auto rounded-3xl mb-3"
                 />
-                <h1 className="text-4xl font-bold font-sora text-stone-900">
+                <h1 className="text-4xl font-bold font-sora text-yellow-400">
                   Cardápio Degust
                 </h1>
               </div>
@@ -143,7 +133,7 @@ export default function DegustApp() {
               {SALGADOS.map((salgado) => (
                 <div
                   key={salgado.id}
-                  className="flex items-center bg-white rounded-xl border border-stone-200 shadow-sm p-4"
+                  className="flex items-center bg-gray-900 rounded-xl border border-yellow-900 shadow-sm p-4"
                 >
                   <img
                     src={salgado.image}
@@ -151,15 +141,15 @@ export default function DegustApp() {
                     className="w-16 h-16 rounded-md object-cover mr-4"
                   />
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg text-stone-900">{salgado.label}</h3>
-                    <p className="text-sm text-stone-500">{salgado.desc}</p>
+                    <h3 className="font-bold text-lg text-yellow-400">{salgado.label}</h3>
+                    <p className="text-sm text-yellow-200">{salgado.desc}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-stone-900">{brl(salgado.price)}</p>
+                    <p className="font-bold text-yellow-400">{brl(salgado.price)}</p>
                     {!isPrinting && (
                       <button
                         onClick={() => handleAddToCart(salgado)}
-                        className="mt-2 px-3 py-1 text-sm font-semibold rounded-lg bg-amber-400 hover:bg-amber-500 text-amber-900 shadow-sm"
+                        className="mt-2 px-3 py-1 text-sm font-semibold rounded-lg bg-yellow-500 hover:bg-yellow-600 text-black shadow-sm"
                       >
                         +
                       </button>
@@ -172,10 +162,10 @@ export default function DegustApp() {
         </section>
 
         <aside className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-5 sticky top-24">
-            <h2 className="text-xl font-bold mb-5 font-sora">Seu Pedido</h2>
+          <div className="bg-gray-900 rounded-2xl shadow-sm border border-yellow-900 p-5 sticky top-24">
+            <h2 className="text-xl font-bold mb-5 font-sora text-yellow-400">Seu Pedido</h2>
             {cart.length === 0 ? (
-              <p className="text-stone-500 text-sm py-4 text-center">
+              <p className="text-yellow-200 text-sm py-4 text-center">
                 Seu carrinho está vazio.
               </p>
             ) : (
@@ -186,20 +176,20 @@ export default function DegustApp() {
                     className="flex items-center justify-between gap-3 text-sm"
                   >
                     <div className="flex-1">
-                      <span className="font-bold block">{item.label}</span>
-                      <span className="text-stone-500">{brl(item.price)}</span>
+                      <span className="font-bold block text-yellow-400">{item.label}</span>
+                      <span className="text-yellow-200">{brl(item.price)}</span>
                     </div>
-                    <div className="flex items-center gap-2 border border-stone-200 rounded-lg px-2 py-1">
+                    <div className="flex items-center gap-2 border border-yellow-900 rounded-lg px-2 py-1">
                       <button
                         onClick={() => updateQuantity(item.id, -1)}
-                        className="font-bold text-lg w-6 h-6 text-red-500 rounded-full hover:bg-red-50 transition"
+                        className="font-bold text-lg w-6 h-6 text-red-500 rounded-full hover:bg-red-900 transition"
                       >
                         -
                       </button>
-                      <span className="font-bold text-center w-6">{item.quantity}</span>
+                      <span className="font-bold text-center w-6 text-yellow-400">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.id, 1)}
-                        className="font-bold text-lg w-6 h-6 text-green-500 rounded-full hover:bg-green-50 transition"
+                        className="font-bold text-lg w-6 h-6 text-green-500 rounded-full hover:bg-green-900 transition"
                       >
                         +
                       </button>
@@ -208,17 +198,17 @@ export default function DegustApp() {
                 ))}
               </ul>
             )}
-            <div className="mt-6 border-t border-stone-200 pt-5">
+            <div className="mt-6 border-t border-yellow-900 pt-5">
               <div className="flex items-baseline justify-between mb-5">
-                <span className="text-stone-600 font-medium">Total</span>
-                <span className="text-2xl font-bold font-sora">{brl(total)}</span>
+                <span className="text-yellow-200 font-medium">Total</span>
+                <span className="text-2xl font-bold font-sora text-yellow-400">{brl(total)}</span>
               </div>
               <button
                 onClick={sendToWhatsApp}
                 disabled={cart.length === 0}
                 className={`w-full py-3 rounded-lg shadow-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 ${cart.length > 0
-                  ? "bg-green-600 hover:bg-green-700 text-white transform hover:scale-105"
-                  : "bg-stone-200 text-stone-500 cursor-not-allowed"
+                  ? "bg-yellow-500 hover:bg-yellow-600 text-black transform hover:scale-105"
+                  : "bg-gray-800 text-gray-500 cursor-not-allowed"
                   }`}
               >
                 <svg
@@ -227,7 +217,7 @@ export default function DegustApp() {
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
-                  <path d="M10.25 18a.75.75 0 01-.75-.75V2.75a.75.75 0 011.5 0v14.5a.75.75 0 01-.75-.75zM4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z" />
+                  <path d="M10.25 18a.75.75 0 01-.75-.75V2.75a.75.75 0 011.5 0v14.5a.75.75 0 01-.75.75zM4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z" />
                 </svg>
                 Finalizar no WhatsApp
               </button>
@@ -236,7 +226,7 @@ export default function DegustApp() {
         </aside>
       </main>
 
-      <footer className="max-w-6xl mx-auto p-6 text-center text-xs text-stone-500 font-medium">
+      <footer className="max-w-6xl mx-auto p-6 text-center text-xs text-yellow-200 font-medium">
         © {new Date().getFullYear()} Degust. Todos os direitos reservados.
       </footer>
     </div>
