@@ -19,11 +19,56 @@ const SALGADOS = [
 
 const brl = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
 
+// --- NOVO COMPONENTE: CARDÁPIO PARA DOWNLOAD ---
+// Este componente tem um design aprimorado e será usado para gerar a imagem.
+// Ele fica invisível na tela principal.
+const DownloadableMenu = React.forwardRef((props, ref) => (
+  <div ref={ref} className="absolute -left-[9999px] top-0 w-[800px] bg-black p-12 font-inter text-white">
+    <div className="text-center mb-10">
+      <img src={logo} alt="Degust Logo" className="w-24 h-24 rounded-3xl mx-auto mb-4 border-4 border-yellow-500" />
+      <h1 className="text-6xl font-bold font-sora text-yellow-400">Degust</h1>
+      <p className="text-yellow-200 text-lg">O melhor sabor da região</p>
+    </div>
+
+    <div className="grid grid-cols-2 gap-x-12 gap-y-6">
+      <div className="col-span-1 flex flex-col justify-center">
+        <h2 className="text-4xl font-sora font-bold text-yellow-400 border-b-2 border-yellow-800 pb-2 mb-6">Nosso Cardápio</h2>
+        {SALGADOS.slice(0, Math.ceil(SALGADOS.length / 2)).map(salgado => (
+          <div key={salgado.id} className="flex justify-between items-baseline mb-3">
+            <div>
+              <h3 className="text-xl font-bold text-yellow-300">{salgado.label}</h3>
+              <p className="text-sm text-yellow-200">{salgado.desc}</p>
+            </div>
+            <div className="flex-1 border-b border-dashed border-yellow-800 mx-2"></div>
+            <p className="text-xl font-bold text-yellow-300">{brl(salgado.price)}</p>
+          </div>
+        ))}
+      </div>
+      <div className="col-span-1 flex flex-col justify-center">
+        {SALGADOS.slice(Math.ceil(SALGADOS.length / 2)).map(salgado => (
+          <div key={salgado.id} className="flex justify-between items-baseline mb-3">
+            <div>
+              <h3 className="text-xl font-bold text-yellow-300">{salgado.label}</h3>
+              <p className="text-sm text-yellow-200">{salgado.desc}</p>
+            </div>
+            <div className="flex-1 border-b border-dashed border-yellow-800 mx-2"></div>
+            <p className="text-xl font-bold text-yellow-300">{brl(salgado.price)}</p>
+          </div>
+        ))}
+        <img src={coxinhaImg} alt="Coxinha" className="rounded-lg mt-6 w-full object-cover h-48 shadow-lg shadow-yellow-500/10" />
+      </div>
+    </div>
+    <div className="text-center mt-12 text-yellow-200">
+      <p>Faça seu pedido pelo WhatsApp!</p>
+      <p className="font-bold text-xl">{WHATSAPP_NUMBER}</p>
+    </div>
+  </div>
+));
+
+
 export default function DegustApp() {
   // --- ESTADOS DO COMPONENTE ---
   const [cart, setCart] = useState(() => {
-    // MELHORIA 6: PERSISTÊNCIA DO CARRINHO COM LOCALSTORAGE
-    // Carrega o carrinho do localStorage ao iniciar, ou um array vazio se não houver nada.
     const savedCart = localStorage.getItem("degustCart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
@@ -34,18 +79,19 @@ export default function DegustApp() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
 
-  const menuRef = useRef(null);
+  // MUDANÇA: Ref renomeada para o cardápio visível
+  const menuOnScreenRef = useRef(null);
+  // MUDANÇA: Nova ref para o cardápio de download
+  const downloadableMenuRef = useRef(null);
+
   const total = useMemo(() => cart.reduce((acc, item) => acc + item.price * item.quantity, 0), [cart]);
   const totalItemsInCart = useMemo(() => cart.reduce((acc, item) => acc + item.quantity, 0), [cart]);
 
   // --- EFEITOS (LIFECYCLE) ---
-
-  // Salva o carrinho no localStorage sempre que ele for alterado.
   useEffect(() => {
     localStorage.setItem("degustCart", JSON.stringify(cart));
   }, [cart]);
 
-  // Controla a visibilidade do botão "Voltar ao Topo".
   useEffect(() => {
     const checkScrollTop = () => {
       if (!showScroll && window.pageYOffset > 400) {
@@ -59,9 +105,6 @@ export default function DegustApp() {
   }, [showScroll]);
 
   // --- FUNÇÕES DE LÓGICA ---
-
-  // MELHORIA 1: FILTRO DE PRODUTOS
-  // Filtra os salgados com base no termo de busca e no filtro de preço.
   const filteredSalgados = useMemo(() => {
     return SALGADOS.filter(salgado => {
       const matchesSearch = salgado.label.toLowerCase().includes(searchTerm.toLowerCase());
@@ -82,9 +125,6 @@ export default function DegustApp() {
       }
       return [...prevCart, { ...salgado, quantity: 1 }];
     });
-
-    // MELHORIA 3: NOTIFICAÇÃO (POPUP) ANIMADA
-    // Adiciona uma chave única para reiniciar a animação a cada clique.
     setPopup({ show: true, message: `${salgado.label} adicionado!`, key: Date.now() });
     setTimeout(() => setPopup(p => ({ ...p, show: false })), 3000);
   };
@@ -101,7 +141,6 @@ export default function DegustApp() {
     });
   };
 
-  // MELHORIA 4: BOTÃO PARA LIMPAR O CARRINHO
   const clearCart = () => {
     if (window.confirm("Tem certeza que deseja esvaziar o carrinho?")) {
       setCart([]);
@@ -115,9 +154,10 @@ export default function DegustApp() {
     window.open(url, "_blank");
   };
 
+  // MUDANÇA: Lógica de download atualizada para usar a nova ref
   const handleDownloadMenu = () => {
-    setIsDownloading(true); // MELHORIA 8: FEEDBACK DE CARREGAMENTO NO DOWNLOAD
-    html2canvas(menuRef.current, { useCORS: true, scale: 2, backgroundColor: "#000" })
+    setIsDownloading(true);
+    html2canvas(downloadableMenuRef.current, { useCORS: true, scale: 2 })
       .then((canvas) => {
         const link = document.createElement("a");
         link.href = canvas.toDataURL("image/png");
@@ -127,7 +167,6 @@ export default function DegustApp() {
       .finally(() => setIsDownloading(false));
   };
 
-  // MELHORIA 7: BOTÃO "VOLTAR AO TOPO"
   const scrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -135,14 +174,15 @@ export default function DegustApp() {
   // --- RENDERIZAÇÃO DO COMPONENTE (JSX) ---
   return (
     <div className="min-h-screen bg-black text-yellow-50 font-inter">
-      {/* Pop-up animado */}
+      {/* MUDANÇA: Adicionado o componente invisível do cardápio para download */}
+      <DownloadableMenu ref={downloadableMenuRef} />
+
       {popup.show && (
         <div key={popup.key} className="fixed top-5 right-5 bg-green-600 text-white p-4 rounded-lg shadow-lg z-50 animate-slideIn">
           {popup.message}
         </div>
       )}
 
-      {/* Botão "Voltar ao Topo" */}
       {showScroll && (
         <button onClick={scrollTop} aria-label="Voltar ao topo" className="fixed bottom-5 right-5 w-12 h-12 bg-yellow-500 text-black rounded-full shadow-lg z-50 flex items-center justify-center transition-transform hover:scale-110">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg>
@@ -172,7 +212,6 @@ export default function DegustApp() {
             </button>
           </div>
 
-          {/* MELHORIA 2: FILTROS DE CATEGORIA E BUSCA */}
           <div className="mb-6 p-4 bg-gray-900 rounded-lg border border-yellow-900 flex flex-col md:flex-row gap-4">
             <input type="text" placeholder="Buscar salgado..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="flex-grow bg-gray-800 border border-yellow-800 rounded-md px-3 py-2 text-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500" />
             <div className="flex items-center gap-2">
@@ -182,10 +221,9 @@ export default function DegustApp() {
             </div>
           </div>
 
-          <div ref={menuRef} className="p-1">
+          <div ref={menuOnScreenRef} className="p-1">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredSalgados.length > 0 ? filteredSalgados.map((salgado) => (
-                // MELHORIA 10: EFEITOS DE HOVER APRIMORADOS
                 <div key={salgado.id} className="flex items-center bg-gray-900 rounded-xl border border-yellow-900 shadow-sm p-4 transition-all duration-300 hover:border-yellow-500 hover:shadow-lg hover:shadow-yellow-500/10 transform hover:-translate-y-1">
                   <img src={salgado.image} alt={salgado.label} className="w-20 h-20 rounded-md object-cover mr-4" />
                   <div className="flex-1">
@@ -206,14 +244,12 @@ export default function DegustApp() {
           <div className="bg-gray-900 rounded-2xl shadow-sm border border-yellow-900 p-5 sticky top-24">
             <div className="flex justify-between items-center mb-5">
               <h2 className="text-xl font-bold font-sora text-yellow-400">Seu Pedido</h2>
-              {/* MELHORIA 9: BADGE COM TOTAL DE ITENS */}
               {totalItemsInCart > 0 && (
                 <span className="bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded-full">{totalItemsInCart} {totalItemsInCart > 1 ? 'itens' : 'item'}</span>
               )}
             </div>
 
             {cart.length === 0 ? (
-              // MELHORIA 5: ÍCONE NO CARRINHO VAZIO
               <div className="text-center py-8">
                 <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                 <p className="text-yellow-200 text-sm mt-2">Seu carrinho está vazio.</p>
