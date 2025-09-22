@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import html2canvas from "html2canvas";
 import logo from "./assets/logo.png";
 import coxinhaImg from "./assets/coxinha.jpg";
-import placeholderImg from "./assets/salgado_placeholder.jpg";
+import placeholderImg from "./assets/coxinha.jpg";
 
 // --- DADOS E CONSTANTES ---
 const WHATSAPP_NUMBER = "7182330587";
