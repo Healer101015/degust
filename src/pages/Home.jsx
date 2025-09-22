@@ -7,14 +7,14 @@ import placeholderImg from "./assets/salgado_placeholder.jpg";
 // --- DADOS E CONSTANTES ---
 const WHATSAPP_NUMBER = "7182330587";
 const SALGADOS = [
-  { id: "frango", label: "Frango", desc: "Coxinha de frango", price: 6.0, image: coxinhaImg },
-  { id: "frango_catupiry", label: "Frango com Catupiry", desc: "Frango + catupiry", price: 6.5, image: coxinhaImg },
-  { id: "carne_ervilha", label: "Carne com Ervilha", desc: "Carne + ervilha", price: 7.0, image: placeholderImg },
-  { id: "calabresa_apimentada", label: "Calabresa Apimentada", desc: "Calabresa picante", price: 6.5, image: placeholderImg },
-  { id: "carne_hamburguer_queijo", label: "Carne de Hambúrguer com Queijo", desc: "Hambúrguer + queijo", price: 6.5, image: placeholderImg },
-  { id: "queijo_presunto", label: "Queijo e Presunto", desc: "Presunto + queijo", price: 7.0, image: placeholderImg },
-  { id: "carne_sol_catupiry", label: "Carne de Sol com Catupiry", desc: "Carne de sol + catupiry", price: 8.5, image: placeholderImg },
-  { id: "hamburguer_especial", label: "Hambúrguer Especial", desc: "Hambúrguer, queijo, pitbull e camarão", price: 10.0, image: placeholderImg },
+  { id: "tradicional", label: "Tradicional", desc: "Frango", price: 6.0, image: coxinhaImg },
+  { id: "caipira", label: "Caipira", desc: "Frango com catupiry", price: 6.5, image: coxinhaImg },
+  { id: "pizza", label: "Pizza", desc: "Queijo, presunto e orégano", price: 7.0, image: placeholderImg },
+  { id: "baiana", label: "Baiana", desc: "Calabresa apimentada", price: 6.0, image: placeholderImg },
+  { id: "brutos", label: "Brutos", desc: "Carne de hambúrguer, presunto e queijo", price: 7.0, image: placeholderImg },
+  { id: "nordestina", label: "Nordestina", desc: "Carne de sol com catupiry", price: 8.5, image: placeholderImg },
+  { id: "bovino", label: "Bovino", desc: "Carne com ervilha", price: 7.0, image: placeholderImg },
+  { id: "ouro_do_mar", label: "Ouro do Mar", desc: "Camarão", price: 10.0, image: placeholderImg }
 ].sort((a, b) => a.price - b.price);
 
 const brl = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
