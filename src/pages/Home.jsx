@@ -7,32 +7,35 @@ import placeholderImg from "./assets/salgado_placeholder.jpg";
 const WHATSAPP_NUMBER = "7182330587";
 
 const SALGADOS = [
-  { id: "frango", label: "Frango", price: 6.00, image: coxinhaImg },
-  { id: "frango_catupiry", label: "Frango com Catupiry", price: 6.50, image: coxinhaImg },
-  { id: "carne_ervilha", label: "Carne com Ervilha", price: 7.00, image: placeholderImg },
-  { id: "calabresa_apimentada", label: "Calabresa Apimentada", price: 6.50, image: placeholderImg },
-  { id: "carne_hamburguer_queijo", label: "Carne de Hambúrguer com Queijo", price: 6.50, image: placeholderImg },
-  { id: "queijo_presunto", label: "Queijo e Presunto", price: 7.00, image: placeholderImg },
-  { id: "carne_sol_catupiry", label: "Carne de Sol com Catupiry", price: 8.50, image: placeholderImg },
-  { id: "carne_hamburguer_queijo_pitbull_camarao", label: "Hambúrguer, Queijo, Pitbull e Camarão", price: 10.00, image: placeholderImg },
+  { id: "frango", label: "Frango", desc: "Coxinha de frango", price: 6.0, image: coxinhaImg },
+  { id: "frango_catupiry", label: "Frango com Catupiry", desc: "Frango + catupiry", price: 6.5, image: coxinhaImg },
+  { id: "carne_ervilha", label: "Carne com Ervilha", desc: "Carne + ervilha", price: 7.0, image: placeholderImg },
+  { id: "calabresa_apimentada", label: "Calabresa Apimentada", desc: "Calabresa picante", price: 6.5, image: placeholderImg },
+  { id: "carne_hamburguer_queijo", label: "Carne de Hambúrguer com Queijo", desc: "Hambúrguer + queijo", price: 6.5, image: placeholderImg },
+  { id: "queijo_presunto", label: "Queijo e Presunto", desc: "Presunto + queijo", price: 7.0, image: placeholderImg },
+  { id: "carne_sol_catupiry", label: "Carne de Sol com Catupiry", desc: "Carne de sol + catupiry", price: 8.5, image: placeholderImg },
+  { id: "hamburguer_especial", label: "Hambúrguer Especial", desc: "Hambúrguer, queijo, pitbull e camarão", price: 10.0, image: placeholderImg },
 ];
 
-const brl = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
+const brl = (v) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
 
 export default function DegustApp() {
   const [cart, setCart] = useState([]);
   const [observacoes, setObservacoes] = useState("");
-  const [isPrinting, setIsPrinting] = useState(false); // Novo estado para controlar a impressão
+  const [isPrinting, setIsPrinting] = useState(false);
   const menuRef = useRef(null);
 
-  const total = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const handleAddToCart = (salgado) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === salgado.id);
       if (existingItem) {
         return prevCart.map((item) =>
-          item.id === salgado.id ? { ...item, quantity: item.quantity + 1 } : item
+          item.id === salgado.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       } else {
         return [...prevCart, { ...salgado, quantity: 1 }];
@@ -53,7 +56,7 @@ export default function DegustApp() {
   };
 
   const sendToWhatsApp = () => {
-    const pedido = cart.map(item => `${item.quantity}x ${item.label}`).join("\n• ");
+    const pedido = cart.map((item) => `${item.quantity}x ${item.label}`).join("\n• ");
     const msg = [
       "Olá, Degust! Gostaria de fazer um pedido:",
       `\n*Itens:*`,
@@ -66,22 +69,22 @@ export default function DegustApp() {
   };
 
   const handleDownloadMenu = () => {
-    setIsPrinting(true); // Ativa o modo de impressão
+    setIsPrinting(true);
   };
 
-  // Efeito para gerar o canvas APÓS o componente re-renderizar sem os botões
   useEffect(() => {
     if (isPrinting) {
       if (menuRef.current) {
         html2canvas(menuRef.current, {
           useCORS: true,
           scale: 2,
+          backgroundColor: "#ffffff",
         }).then((canvas) => {
           const link = document.createElement("a");
           link.href = canvas.toDataURL("image/png");
           link.download = "cardapio-degust.png";
           link.click();
-          setIsPrinting(false); // Desativa o modo de impressão após o download
+          setIsPrinting(false);
         });
       } else {
         setIsPrinting(false);
@@ -89,60 +92,67 @@ export default function DegustApp() {
     }
   }, [isPrinting]);
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.tailwindcss.com";
-    document.body.appendChild(script);
-    return () => document.body.removeChild(script);
-  }, []);
-
   return (
-    <div className="min-h-screen bg-stone-50 text-slate-800">
-      <header className="sticky top-0 z-10 backdrop-blur bg-white/80 border-b border-stone-200">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div className="min-h-screen bg-stone-50 text-stone-800 font-inter">
+      <header className="sticky top-0 z-10 backdrop-blur-md bg-stone-50/80 border-b border-stone-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={logo} alt="Degust Logo" className="w-10 h-10 rounded-2xl" />
-            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-stone-800">Degust</h1>
+            <h1 className="text-xl sm:text-2xl font-bold font-sora tracking-tight">Degust</h1>
           </div>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto p-4 grid lg:grid-cols-3 gap-4 lg:gap-6">
+      <main className="max-w-6xl mx-auto p-4 sm:px-6 grid lg:grid-cols-3 gap-6 lg:gap-8">
         <section className="lg:col-span-2">
-          <div className="flex justify-between items-center mb-4 px-2">
-            <h2 className="text-2xl font-bold text-stone-800">Nosso Cardápio</h2>
+          <div className="flex justify-between items-center mb-5 px-1">
+            <h2 className="text-3xl font-bold font-sora text-stone-900">Nosso Cardápio</h2>
             <button
               onClick={handleDownloadMenu}
-              className="px-4 py-2 rounded-xl border text-sm font-semibold shadow-sm transition bg-white hover:bg-stone-100 text-stone-700 border-stone-300"
+              className="px-4 py-2 rounded-lg border text-sm font-semibold shadow-sm transition-all duration-200 bg-white hover:bg-stone-100 text-stone-700 border-stone-300 hover:shadow-md"
             >
               Baixar Cardápio
             </button>
           </div>
-          {/* A área de impressão começa aqui */}
-          <div ref={menuRef} className="bg-white rounded-2xl shadow-sm border border-stone-200 p-4 sm:p-6 mb-4">
-            {/* Logo e título visíveis apenas na impressão */}
+
+          {/* Lista no estilo do cardápio da imagem */}
+          <div ref={menuRef} className={`p-1 ${isPrinting ? "bg-white" : ""}`}>
             {isPrinting && (
-              <div className="mb-6 text-center">
-                <img src={logo} alt="Degust Logo" className="w-16 h-16 mx-auto rounded-3xl mb-2" />
-                <h1 className="text-3xl font-extrabold text-stone-800">Cardápio Degust</h1>
+              <div className="mb-8 text-center p-6">
+                <img
+                  src={logo}
+                  alt="Degust Logo"
+                  className="w-20 h-20 mx-auto rounded-3xl mb-3"
+                />
+                <h1 className="text-4xl font-bold font-sora text-stone-900">
+                  Cardápio Degust
+                </h1>
               </div>
             )}
-            <div className="grid sm:grid-cols-2 gap-4">
+
+            <div className="flex flex-col gap-4">
               {SALGADOS.map((salgado) => (
-                <div key={salgado.id} className="bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden flex flex-col transition hover:shadow-lg">
-                  <img src={salgado.image} alt={salgado.label} className="w-full h-40 object-cover" />
-                  <div className="p-4 flex flex-col flex-grow">
-                    <div className="flex-grow">
-                      <h3 className="font-semibold text-lg">{salgado.label}</h3>
-                      <p className="text-sm text-slate-500">{brl(salgado.price)}</p>
-                    </div>
-                    {/* O botão só aparece se não estiver no modo de impressão */}
+                <div
+                  key={salgado.id}
+                  className="flex items-center bg-white rounded-xl border border-stone-200 shadow-sm p-4"
+                >
+                  <img
+                    src={salgado.image}
+                    alt={salgado.label}
+                    className="w-16 h-16 rounded-md object-cover mr-4"
+                  />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg text-stone-900">{salgado.label}</h3>
+                    <p className="text-sm text-stone-500">{salgado.desc}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-stone-900">{brl(salgado.price)}</p>
                     {!isPrinting && (
                       <button
                         onClick={() => handleAddToCart(salgado)}
-                        className="mt-3 w-full px-4 py-2 rounded-xl border text-sm font-semibold shadow-sm transition bg-amber-400 hover:bg-amber-500 text-amber-900 border-amber-500"
+                        className="mt-2 px-3 py-1 text-sm font-semibold rounded-lg bg-amber-400 hover:bg-amber-500 text-amber-900 shadow-sm"
                       >
-                        Adicionar
+                        +
                       </button>
                     )}
                   </div>
@@ -150,62 +160,76 @@ export default function DegustApp() {
               ))}
             </div>
           </div>
-
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-4 sm:p-6">
-            <h2 className="text-lg font-bold mb-2">Observações</h2>
-            <textarea
-              value={observacoes}
-              onChange={(e) => setObservacoes(e.target.value)}
-              placeholder="Ex.: sem pimenta, etc..."
-              className="w-full min-h-[90px] rounded-xl border border-stone-200 p-3 outline-none focus:ring-2 focus:ring-amber-300"
-            />
-          </div>
         </section>
 
+        {/* Carrinho */}
         <aside className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-4 sm:p-6 sticky top-20">
-            <h2 className="text-lg font-bold mb-4">Seu Pedido</h2>
+          <div className="bg-white rounded-2xl shadow-sm border border-stone-200/80 p-5 sticky top-24">
+            <h2 className="text-xl font-bold mb-5 font-sora">Seu Pedido</h2>
             {cart.length === 0 ? (
-              <p className="text-slate-500 text-sm">Seu carrinho está vazio.</p>
+              <p className="text-stone-500 text-sm py-4 text-center">
+                Seu carrinho está vazio.
+              </p>
             ) : (
-              <ul className="space-y-4 text-sm">
+              <ul className="space-y-4">
                 {cart.map((item) => (
-                  <li key={item.id} className="flex items-center justify-between gap-3">
-                    <div>
-                      <span className="font-semibold block">{item.label}</span>
-                      <span className="text-slate-500">{brl(item.price)}</span>
+                  <li
+                    key={item.id}
+                    className="flex items-center justify-between gap-3 text-sm"
+                  >
+                    <div className="flex-1">
+                      <span className="font-bold block">{item.label}</span>
+                      <span className="text-stone-500">{brl(item.price)}</span>
                     </div>
-                    <div className="flex items-center gap-2 border border-slate-200 rounded-lg px-2 py-1">
-                      <button onClick={() => updateQuantity(item.id, -1)} className="font-bold text-lg w-6 h-6 text-red-500">-</button>
-                      <span className="font-medium text-center w-6">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, 1)} className="font-bold text-lg w-6 h-6 text-green-500">+</button>
+                    <div className="flex items-center gap-2 border border-stone-200 rounded-lg px-2 py-1">
+                      <button
+                        onClick={() => updateQuantity(item.id, -1)}
+                        className="font-bold text-lg w-6 h-6 text-red-500 rounded-full hover:bg-red-50 transition"
+                      >
+                        -
+                      </button>
+                      <span className="font-bold text-center w-6">{item.quantity}</span>
+                      <button
+                        onClick={() => updateQuantity(item.id, 1)}
+                        className="font-bold text-lg w-6 h-6 text-green-500 rounded-full hover:bg-green-50 transition"
+                      >
+                        +
+                      </button>
                     </div>
                   </li>
                 ))}
               </ul>
             )}
-            <div className="mt-6 border-t border-stone-200 pt-4">
-              <div className="flex items-baseline justify-between">
-                <span className="text-slate-500">Total</span>
-                <span className="text-2xl font-extrabold">{brl(total)}</span>
+            <div className="mt-6 border-t border-stone-200 pt-5">
+              <div className="flex items-baseline justify-between mb-5">
+                <span className="text-stone-600 font-medium">Total</span>
+                <span className="text-2xl font-bold font-sora">{brl(total)}</span>
               </div>
+              <button
+                onClick={sendToWhatsApp}
+                disabled={cart.length === 0}
+                className={`w-full py-3 rounded-lg shadow-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 ${cart.length > 0
+                  ? "bg-green-600 hover:bg-green-700 text-white transform hover:scale-105"
+                  : "bg-stone-200 text-stone-500 cursor-not-allowed"
+                  }`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M10.25 18a.75.75 0 01-.75-.75V2.75a.75.75 0 011.5 0v14.5a.75.75 0 01-.75.75zM4 10a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H4.75A.75.75 0 014 10z" />
+                </svg>
+                Finalizar no WhatsApp
+              </button>
             </div>
-            <button
-              onClick={sendToWhatsApp}
-              disabled={cart.length === 0}
-              className={`w-full mt-4 px-4 py-3 rounded-xl shadow-sm font-semibold transition ${cart.length > 0
-                ? "bg-green-600 hover:bg-green-700 text-white"
-                : "bg-slate-200 text-slate-500 cursor-not-allowed"
-                }`}
-            >
-              Finalizar no WhatsApp
-            </button>
           </div>
         </aside>
       </main>
 
-      <footer className="max-w-5xl mx-auto p-6 text-center text-xs text-slate-500">
-        © {new Date().getFullYear()} Degust
+      <footer className="max-w-6xl mx-auto p-6 text-center text-xs text-stone-500 font-medium">
+        © {new Date().getFullYear()} Degust. Todos os direitos reservados.
       </footer>
     </div>
   );
