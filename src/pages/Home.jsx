@@ -2,19 +2,28 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import html2canvas from "html2canvas";
 import logo from "./assets/logo.png";
 import coxinhaImg from "./assets/coxinha.jpg";
-import placeholderImg from "./assets/coxinha.jpg";
+import coxinhaImg2 from "./assets/coxinha7.jpg";
+import placeholderImg1 from "./assets/batata.jpg";
+import placeholderImg from "./assets/coxinha1.jpg";
+import placeholderImg2 from "./assets/coxinha2.jpg";
+import placeholderImg3 from "./assets/coxinha3.png";
+import placeholderImg4 from "./assets/coxinha4.jpg";
+import placeholderImg5 from "./assets/coxinha5.jpg";
+import placeholderImg6 from "./assets/coxinha6.jpg";
+
 
 // --- DADOS E CONSTANTES ---
 const WHATSAPP_NUMBER = "7182330587";
 const SALGADOS = [
   { id: "tradicional", label: "Tradicional", desc: "Frango", price: 7.0, image: coxinhaImg },
-  { id: "caipira", label: "Caipira", desc: "Frango com catupiry", price: 7.5, image: coxinhaImg },
+  { id: "caipira", label: "Caipira", desc: "Frango com catupiry", price: 7.5, image: coxinhaImg2 },
   { id: "pizza", label: "Pizza", desc: "Queijo, presunto e orégano", price: 7.5, image: placeholderImg },
-  { id: "baiana", label: "Baiana", desc: "Calabresa, Pimenta calabresa", price: 6.5, image: placeholderImg },
-  { id: "brutos", label: "Brutos", desc: "Carne de hambúrguer, presunto e queijo", price: 7.0, image: placeholderImg },
-  { id: "nordestina", label: "Nordestina", desc: "Carne de sol com catupiry", price: 8.5, image: placeholderImg },
-  { id: "bovino", label: "Bovino", desc: "Carne com ervilha", price: 7.5, image: placeholderImg },
-  { id: "ouro_do_mar", label: "Ouro do Mar", desc: "Camarão", price: 12.0, image: placeholderImg }
+  { id: "baiana", label: "Baiana", desc: "Calabresa, Pimenta calabresa", price: 6.5, image: placeholderImg2 },
+  { id: "brutos", label: "Brutos", desc: "Carne de hambúrguer, presunto e queijo", price: 7.0, image: placeholderImg3 },
+  { id: "nordestina", label: "Nordestina", desc: "Carne de sol com catupiry", price: 8.5, image: placeholderImg4 },
+  { id: "bovino", label: "Bovino", desc: "Carne com ervilha", price: 7.5, image: placeholderImg5 },
+  { id: "ouro_do_mar", label: "Ouro do Mar", desc: "Camarão", price: 12.0, image: placeholderImg6 },
+  { id: "batata_frita", label: "Batata Frita", desc: "300g, queijo e ketchup", price: 10.0, image: placeholderImg1 }
 ].sort((a, b) => a.price - b.price);
 
 const brl = (v) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
