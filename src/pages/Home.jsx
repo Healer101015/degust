@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import html2canvas from "html2canvas";
 import logo from "./assets/logo.png";
-import coxinhaImg from "./assets/coxinha.jpg";
-import coxinhaImg2 from "./assets/coxinha7.jpg";
+import coxinhaImg from "./assets/coxinha_frango.jpg";
+import coxinhaImg2 from "./assets/coxinha_catupiry.jpg";
 import placeholderImg1 from "./assets/batata.jpg";
 import placeholderImg from "./assets/coxinha1.jpg";
-import placeholderImg2 from "./assets/coxinha2.jpg";
+import placeholderImg2 from "./assets/coxinha_calabresa.png";
 import placeholderImg3 from "./assets/coxinha3.png";
 import placeholderImg4 from "./assets/coxinha4.jpg";
-import placeholderImg5 from "./assets/coxinha5.jpg";
+import placeholderImg5 from "./assets/coxinha_carne.jpg";
 import placeholderImg6 from "./assets/coxinha6.jpg";
 
 
